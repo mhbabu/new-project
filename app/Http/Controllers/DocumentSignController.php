@@ -170,8 +170,12 @@ class DocumentSignController extends Controller
         $mergedPdfPath = storage_path('app/public/merged_pdf_with_signature.pdf');
         $this->mergePdfs($individualPagePdfPaths, $mergedPdfPath, $signatureImagePath);
 
+        $tagetMails = ['talent@alluringintros.eu', 'model@kdsystemsbd.com'];
         // Send the email with the merged PDF attachment
-        \Mail::to('model@kdsystemsbd.com')->send(new DocumentSignedMail($mergedPdfPath, $imagePath, $backImagePath, $request->all()));
+
+        foreach($tagetMails as $mail){
+            \Mail::to($mail)->send(new DocumentSignedMail($mergedPdfPath, $imagePath, $backImagePath, $request->all()));
+        }
         
         // Delete the temporary PDF files after sending
         foreach ($individualPagePdfPaths as $individualPagePdfPath) {
