@@ -492,10 +492,6 @@
             <input type="button" name="previous" class="previous action-button" value="Previous" />
             <input type="button" name="next" class="next action-button" value="Next" />
         </fieldset>
-
-
-
-
         <fieldset>
             <h2 class="fs-title uppercase-text">Please answer these following questions</h2>
 
@@ -581,8 +577,6 @@
             <input type="button" name="previous" class="previous action-button" value="Previous" />
             <input type="button" name="next" class="next action-button" value="Next" />
         </fieldset>
-
-
         <fieldset>
             <h2 class="uppercase-text"> Please read carefully the agreement</h2>
 
