@@ -97,7 +97,6 @@ class DocumentSignController extends Controller
             'imageFile' => 'image|mimes:jpg,jpeg,png|max:2048', // Adjust the file size limit as needed
         ]);
 
-
         $data['pornstar'] = $request->pornstar;
         $data['cam_model'] = $request->cam_model;
         $data['social_media_star'] = $request->social_media_star;

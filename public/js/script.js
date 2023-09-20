@@ -25,9 +25,10 @@ function validateStep1() {
     var age = $("input[name='age']").val();
     // var dob = $("input[name='dob']").val();
     var maritalStatus = $("select[name='marital_status']").val();
+    var ethnicity = $("select[name='ethnicities']").val();
 
     // Check if any of the required fields are empty
-    if (name === "" || stageName === "" || email === "" || phone === "" || nationality === "" || age === "" || maritalStatus === "") {
+    if (name === "" || stageName === "" || email === "" || phone === "" || nationality === "" || age === "" || maritalStatus === "" || ethnicity === "") {
         alert("Please fill in all the required fields.");
         return false;
     }
