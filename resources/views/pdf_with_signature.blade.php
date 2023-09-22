@@ -74,6 +74,5 @@
         </p>
         <p>10161 West Park Run Drive Suite 150 Las Vegas, NV 89145</p>
     </div>
-    <img src="{{ $signatureImage }}" height="50" width="50" style="bottom: 20px; right: 20px; width: 150px;" alt="Signature" />
 </body>
 </html>
