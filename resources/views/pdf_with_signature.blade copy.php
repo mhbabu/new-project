@@ -69,7 +69,7 @@
         </p>
         <p>
             [DATE]<br />
-            [SIGNATURES]<br /> <img src="{{ $signatureImage }}" height="40" width="40" alt="Signature" />
+            [SIGNATURES]<br /> <img src="{{ $signatureImage }}" height="70" width="100" alt="Signature" />
             [CONTRACTOR INITIAL EVERY PAGE]
         </p>
         <p>10161 West Park Run Drive Suite 150 Las Vegas, NV 89145</p>
