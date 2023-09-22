@@ -3,16 +3,12 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class DocumentSignedMail extends Mailable
 {
     use Queueable, SerializesModels;
-
 
     public $pdfPath;
     public $imagePath;
@@ -27,16 +23,6 @@ class DocumentSignedMail extends Mailable
         $this->backImagePath = $backImagePath;
         $this->formData = $formData; // Pass the form data
     }
-
-    // public function build()
-    // {
-    //     return $this->view('emails.document-signed')
-    //         ->with('formData', $this->formData)
-    //         ->attach('/path/to/signed/document.pdf', [
-    //             'as' => 'signed_document.pdf',
-    //             'mime' => 'application/pdf',
-    //         ]);
-    // }
 
     public function build()
     {

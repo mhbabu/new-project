@@ -3,43 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\Mail;
 use App\Mail\DocumentSignedMail;
-use App\Models\DocumentSigned;
-use setasign\Fpdi\Fpdi;
-// use File;
-use Illuminate\Support\Facades\File;
-
-use PDF;
 
 class DocumentSignController extends Controller
 {
     public function index()
     {
         return view('index');
-    }
-
-    // Function to merge PDFs
-    private function mergePdfs($pdfPaths, $outputPath, $signatureImagePath)
-    {
-        $pdf = new Fpdi();
-
-        foreach ($pdfPaths as $pdfPath) {
-            $pageCount = $pdf->setSourceFile($pdfPath);
-
-            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                $pdf->AddPage();
-                $templateId = $pdf->importPage($pageNo);
-                $pdf->useTemplate($templateId, 0, 0);
-
-                // Add the signature image to the page
-                $pdf->Image($signatureImagePath, 0, 0, 100); // Adjust the position and size as needed
-                $pdf->SetFont('Arial', '', 2); // Adjust the font and size as needed
-            }
-        }
-
-        $pdf->Output($outputPath, 'F');
     }
 
     public function submit(Request $request)
@@ -73,49 +43,16 @@ class DocumentSignController extends Controller
             $backImageFile->move(storage_path('app/public'), 'temp_image2.png'); // Move the uploaded file to storage
         }
 
-        // Load the PDF Blade file for initial rendering (without the signature)
-        $pdf = PDF::loadView('pdf_with_signature', [
-            'data' => $request->all(),
-            'signatureImage' => $signatureImagePath, // Pass the signature image path to the view
-        ]);
+        $pdf = new \Mpdf\Mpdf();
+        $html = view('pdf_with_signature',['data' => $request->all(), 'signatureImage' => $signatureImage])->render();
+        $pdf->WriteHTML($html);
+        $filename = 'generated_pdf_' . time() . '.pdf';
+        $pdf->Output(storage_path('app/public/') . $filename, 'F');
 
-        // Get the number of pages in the PDF
-        $numPages = $pdf
-            ->getDomPDF()
-            ->getCanvas()
-            ->get_page_count();
-
-        // Create an array to store the paths of individual page PDFs
-        $individualPagePdfPaths = [];
-
-        // Create a new PDF instance for each page and add the signature
-        for ($page = 1; $page <= $numPages; $page++) {
-            $individualPdf = PDF::loadView('pdf_with_signature', [
-                'data' => $request->all(),
-                'signatureImage' => $signatureImagePath, // Pass the signature image path to the view
-            ]);
-
-            // Save the individual page PDF
-            $individualPagePdfPath = storage_path('app/public/temp_page_' . $page . '.pdf');
-            $individualPdf->save($individualPagePdfPath);
-
-            $individualPagePdfPaths[] = $individualPagePdfPath;
-        }
-
-        // Merge individual page PDFs into a single PDF with the signature on each page
-        $mergedPdfPath = storage_path('app/public/merged_pdf_with_signature.pdf');
-        $this->mergePdfs($individualPagePdfPaths, $mergedPdfPath, $signatureImagePath);
-
+        $pdfFileDestination = storage_path('app/public/' . $filename);
         $tagetMails = ['talent@alluringintros.eu', 'model@kdsystemsbd.com'];
-        // Send the email with the merged PDF attachment
-
         foreach ($tagetMails as $mail) {
-            \Mail::to($mail)->send(new DocumentSignedMail($mergedPdfPath, $imagePath, $backImagePath, $request->all()));
-        }
-
-        // Delete the temporary PDF files after sending
-        foreach ($individualPagePdfPaths as $individualPagePdfPath) {
-            File::delete($individualPagePdfPath);
+            \Mail::to($mail)->send(new DocumentSignedMail($pdfFileDestination, $imagePath, $backImagePath, $request->all()));
         }
 
         // Redirect or return a response as needed
